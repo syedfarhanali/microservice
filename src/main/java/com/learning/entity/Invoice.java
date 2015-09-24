@@ -17,7 +17,7 @@ public class Invoice extends BaseEntity{
     @ManyToOne
     private Customer customer;
 
-    private Integer totalPrice;
+    private Double totalPrice;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;

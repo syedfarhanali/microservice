@@ -116,7 +116,7 @@ CREATE TABLE shipment (
 CREATE TABLE invoice (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   payment_status varchar(255) DEFAULT NULL,
-  total_price int(11) DEFAULT NULL,
+  total_price DOUBLE DEFAULT NULL,
   customer_id bigint(20) DEFAULT NULL,
   order_id bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
