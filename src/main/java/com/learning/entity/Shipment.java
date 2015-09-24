@@ -9,36 +9,27 @@ import javax.persistence.*;
  * Created by amits on 24/09/15.
  */
 @Entity
-
-public class Shipment {
-
-    @Id
-    @GeneratedValue
-    @Getter
-    private Long shipmentId;
+@Getter
+@Setter
+public class Shipment extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "address_id")
-    @Getter
-    @Setter
-    private Address deliveryAddress;
+    private Address shipmentAddress;
 
     @OneToOne
     @JoinColumn(name = "product_id")
-    @Getter
-    @Setter
-    private Product itemShipped;
+    private Product product;
 
-    @Getter
-    @Setter
     @Enumerated(EnumType.STRING)
-    private DeliveryStatus deliveryStatus;
+    private DeliveryStatus status;
 
     @OneToOne
     @JoinColumn(name = "order_id")
-    @Getter
-    @Setter
-    private PurchaseOrder associatedOrder;
+    private Order order;
 
+    @ManyToOne
+    @JoinColumn(name = "logistic_id")
+    private Logistic logistic;
 
 }

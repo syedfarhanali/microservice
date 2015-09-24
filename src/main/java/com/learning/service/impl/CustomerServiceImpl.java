@@ -40,7 +40,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private CustomerDto customerToCustomerDto(Customer customer) {
         CustomerDto customerDto = new CustomerDto();
-        customerDto.setCustomerId(customer.getCustomerId());
+        customerDto.setCustomerId(customer.getId());
         customerDto.setEmail(customer.getEmail());
         customerDto.setName(customer.getName());
 

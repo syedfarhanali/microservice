@@ -36,17 +36,17 @@ public class InventoryServiceImpl implements InventoryService {
 
     private InventoryDto inventoryToInventoryDto(Inventory inventory) {
         InventoryDto inventoryDto = new InventoryDto();
-        inventoryDto.setInventoryId(inventory.getInventoryId());
-        inventoryDto.setTotalItems(inventory.getTotalItems());
-        inventoryDto.setProductName(inventory.getProduct().getProductName());
-        inventoryDto.setProductId(inventory.getProduct().getProductId());
+        inventoryDto.setInventoryId(inventory.getId());
+        inventoryDto.setTotalItems(inventory.getQuantity());
+        inventoryDto.setProductName(inventory.getProduct().getName());
+        inventoryDto.setProductId(inventory.getProduct().getId());
         return inventoryDto;
     }
 
     @Transactional
     @Override
     public void addItems(Long productId, int quantity) throws ItemNotFoundException {
-        Inventory inventory = inventoryRepository.findByProductProductId(productId);
+        Inventory inventory = inventoryRepository.findByProductId(productId);
         if (inventory == null) {
             throw new ItemNotFoundException("No item found for product id " + productId);
         }
@@ -63,11 +63,11 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     @Transactional
     public void removeItem(Long productId, int quantity) throws ItemNotFoundException, InsufficientItemStockException {
-        Inventory inventory = inventoryRepository.findByProductProductId(productId);
+        Inventory inventory = inventoryRepository.findByProductId(productId);
         if (inventory == null) {
             throw new ItemNotFoundException("No item found for product id " + productId);
         }
-        inventory.removeItems(quantity);
+        inventory.reduceItemStock(quantity);
     }
 
 

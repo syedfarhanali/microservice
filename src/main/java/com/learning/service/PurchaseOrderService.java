@@ -1,7 +1,7 @@
 package com.learning.service;
 
-import com.learning.dto.PurchaseOrderRequest;
-import com.learning.dto.PurchaseOrderResponse;
+import com.learning.dto.OrderRequest;
+import com.learning.dto.OrderResponse;
 import com.learning.exception.InsufficientItemStockException;
 import com.learning.exception.ItemNotFoundException;
 
@@ -10,5 +10,5 @@ import com.learning.exception.ItemNotFoundException;
  */
 public interface PurchaseOrderService {
 
-    public PurchaseOrderResponse placeOrder(PurchaseOrderRequest purchaseOrderRequest) throws ItemNotFoundException, InsufficientItemStockException;
+    public OrderResponse placeOrder(OrderRequest orderRequest) throws ItemNotFoundException, InsufficientItemStockException;
 }

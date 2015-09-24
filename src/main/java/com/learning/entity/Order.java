@@ -13,18 +13,14 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name = "purchase_order")
-public class PurchaseOrder {
-
-    @Id
-    @GeneratedValue
-    private Long orderId;
+public class Order extends BaseEntity{
 
     @JoinColumn(name = "customer_id")
     @ManyToOne
     private Customer customer;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus status;
 
     private Date orderDate;
 
@@ -35,5 +31,20 @@ public class PurchaseOrder {
     @JoinColumn(name = "product_id")
     @OneToOne
     private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
+
+    @OneToOne(mappedBy = "order")
+    private Shipment shipment;
+
+    private int quantity;
+
+    private String description;
+
+    @OneToOne
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
 }

@@ -11,14 +11,10 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class Address {
+public class Address extends BaseEntity{
 
-    @Id
-    @GeneratedValue
-    private Long addressId;
 
     private String locality;
-    private String street;
     private String city;
     private String state;
     private String pinCode;

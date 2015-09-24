@@ -12,23 +12,19 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class Inventory {
-
-    @Id
-    @GeneratedValue
-    private Long inventoryId;
+public class Inventory extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private Integer totalItems;
+    private Integer quantity;
 
     public void addItems(Integer itemCount) {
-        totalItems += itemCount;
+        quantity += itemCount;
     }
 
-    public void removeItems(Integer itemCount) throws InsufficientItemStockException {
-        totalItems -= itemCount;
+    public void reduceItemStock(Integer itemCount) throws InsufficientItemStockException {
+        quantity -= itemCount;
     }
 }

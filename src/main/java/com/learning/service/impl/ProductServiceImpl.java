@@ -29,12 +29,8 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductDto productToProductDto(Product product) {
         ProductDto productDto = new ProductDto();
-        productDto.setProductId(product.getProductId());
-        productDto.setPurchaseDate(product.getPurchaseDate());
-        productDto.setProductionDate(product.getProductionDate());
-        productDto.setModelNumber(product.getModelNumber());
-        productDto.setColor(product.getColor());
-        productDto.setProductName(product.getProductName());
+        productDto.setProductId(product.getId());
+        productDto.setProductName(product.getName());
         return productDto;
     }
 }

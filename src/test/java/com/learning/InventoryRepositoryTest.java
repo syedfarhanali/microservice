@@ -15,12 +15,12 @@ public class InventoryRepositoryTest extends BaseTest {
     @Autowired
     private InventoryRepository inventoryRepository;
 
-    @Test
-    @Transactional
-    public void testFetchingInventoryUsingProductName() throws Exception {
-        Inventory inventory = inventoryRepository.findByProductProductName("WiFi-Router");
-        Assert.assertTrue(inventory.getTotalItems() > 0);
-    }
+//    @Test
+//    @Transactional
+//    public void testFetchingInventoryUsingProductName() throws Exception {
+//        Inventory inventory = inventoryRepository.findByProductProductName("WiFi-Router");
+//        Assert.assertTrue(inventory.getTotalItems() > 0);
+//    }
 
 
 

@@ -11,21 +11,18 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class Invoice {
-
-    @Id
-    @GeneratedValue
-    private Long invoiceId;
+public class Invoice extends BaseEntity{
 
     @JoinColumn(name = "customer_id")
     @ManyToOne
     private Customer customer;
 
     private Integer totalPrice;
+
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
     @JoinColumn(name = "order_id")
     @OneToOne
-    private PurchaseOrder referencedPurchaseOrder;
+    private Order order;
 }

@@ -29,17 +29,17 @@ public class ProductRepositoryTest extends BaseTest {
         Assert.assertTrue(productList.size() > 0);
     }
 
-    @Test
-    public void testAddingNewProduct() throws Exception {
-        Product product = new Product();
-        product.setProductName("Electric Shaver");
-        product.setColor("Black");
-        product.setModelNumber("ES34");
-        product.setProductionDate(DateTime.now().minusWeeks(12).toDate());
-        product.setPurchaseDate(DateTime.now().toDate());
-        Inventory inventory = new Inventory();
-        inventory.setProduct(product);
-        inventory.setTotalItems(340);
-        productRepository.save(product);
-    }
+//    @Test
+//    public void testAddingNewProduct() throws Exception {
+//        Product product = new Product();
+//        product.setProductName("Electric Shaver");
+//        product.setColor("Black");
+//        product.setModelNumber("ES34");
+//        product.setProductionDate(DateTime.now().minusWeeks(12).toDate());
+//        product.setPurchaseDate(DateTime.now().toDate());
+//        Inventory inventory = new Inventory();
+//        inventory.setProduct(product);
+//        inventory.setTotalItems(340);
+//        productRepository.save(product);
+//    }
 }

@@ -38,7 +38,7 @@ public class AddressServiceImpl implements AddressService {
         address.setState(address.getState());
         address.setCustomer(customer);
         address = addressRepository.save(address);
-        addressDto.setAddressId(address.getAddressId());
+        addressDto.setAddressId(address.getId());
         return addressDto;
     }
 
@@ -51,12 +51,11 @@ public class AddressServiceImpl implements AddressService {
 
     private AddressDto addressToAddressDto(Address address) {
         AddressDto addressDto = new AddressDto();
-        addressDto.setAddressId(address.getAddressId());
+        addressDto.setAddressId(address.getId());
         addressDto.setState(address.getState());
         addressDto.setPinCode(address.getPinCode());
         addressDto.setCity(address.getCity());
-        addressDto.setCustomerId(address.getCustomer().getCustomerId());
-        addressDto.setStreet(address.getStreet());
+        addressDto.setCustomerId(address.getCustomer().getId());
 
         return addressDto;
     }

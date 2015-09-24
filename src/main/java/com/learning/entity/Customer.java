@@ -12,20 +12,18 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Customer {
-    @Id
-    @GeneratedValue
-    private Long customerId;
+public class Customer extends BaseEntity{
 
     private String name;
 
     private String email;
 
-    @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
-    private List<Address> addressList;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Address> addresses;
 
     @OneToMany(mappedBy = "customer")
-    private List<Invoice> invoiceList;
+    private List<Invoice> invoices;
+
     @OneToMany(mappedBy = "customer")
-    private List<PurchaseOrder> purchaseOrderList;
+    private List<Order> orders;
 }

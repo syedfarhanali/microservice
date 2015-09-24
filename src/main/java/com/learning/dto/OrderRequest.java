@@ -1,5 +1,7 @@
 package com.learning.dto;
 
+import com.learning.entity.Address;
+import com.learning.entity.Customer;
 import com.learning.entity.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,15 +13,9 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class PurchaseOrderResponse {
-
-    private Long orderId;
+public class OrderRequest {
 
     private Long customerId;
-
-    private String CustomerName;
-
-    private OrderStatus orderStatus;
 
     private Date orderDate;
 
@@ -28,4 +24,5 @@ public class PurchaseOrderResponse {
     private Long billingAddressId;
 
     private Integer productQuantity;
+
 }

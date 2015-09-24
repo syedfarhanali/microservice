@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
-    Inventory findByProductProductName(String productName);
+    Inventory findByProductName(String productName);
 
-    Inventory removeByProductProductName(String productName);
+    Inventory removeByProductName(String productName);
 
-    Inventory removeByProductProductId(Long productId);
+    Inventory removeByProductId(Long productId);
 
-    Inventory findByProductProductId(Long productId);
+    Inventory findByProductId(Long productId);
 }
