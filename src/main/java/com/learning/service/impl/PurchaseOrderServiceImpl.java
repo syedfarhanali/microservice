@@ -31,6 +31,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Autowired
     private PurchaseOrderRepository purchaseOrderRepository;
 
+    @Autowired
+    private ShipmentRepository shipmentRepository;
+
     @Override
     @Transactional
     public PurchaseOrderResponse placeOrder(PurchaseOrderRequest purchaseOrderRequest) throws ItemNotFoundException, InsufficientItemStockException {
@@ -53,7 +56,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         purchaseOrder = purchaseOrderRepository.save(purchaseOrder);
         Inventory inventory = inventoryRepository.findByProductProductId(productId);
         inventory.removeItems(purchaseOrderRequest.getProductQuantity());
-
+        Shipment shipment = new Shipment();
+        shipment.setDeliveryAddress(address);
+        shipment.setDeliveryStatus(DeliveryStatus.COMPLETED);
+        shipment.setItemShipped(product);
+        shipmentRepository.save(shipment);
         return preparePurchaseOrderResponse(purchaseOrderRequest, purchaseOrder);
     }
 
