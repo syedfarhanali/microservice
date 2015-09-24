@@ -69,12 +69,15 @@ CREATE TABLE inventory (
 CREATE TABLE shipment (
   shipment_id bigint(20) NOT NULL AUTO_INCREMENT,
   delivery_status varchar(255) DEFAULT NULL,
+  order_id bigint(20) DEFAULT NULL,
   address_id bigint(20) DEFAULT NULL,
   product_id bigint(20) DEFAULT NULL,
   PRIMARY KEY (shipment_id),
+  KEY FK_p06cong2injx54ipykoegys3w (order_id),
   KEY FK_13ktmp5d89poxoda249wfop7n (address_id),
   KEY FK_c6fhq3h113tllneo04pdj8ig5 (product_id),
   CONSTRAINT FK_13ktmp5d89poxoda249wfop7n FOREIGN KEY (address_id) REFERENCES address (address_id),
-  CONSTRAINT FK_c6fhq3h113tllneo04pdj8ig5 FOREIGN KEY (product_id) REFERENCES product (product_id)
+  CONSTRAINT FK_c6fhq3h113tllneo04pdj8ig5 FOREIGN KEY (product_id) REFERENCES product (product_id),
+  CONSTRAINT FK_p06cong2injx54ipykoegys3w FOREIGN KEY (order_id) REFERENCES purchase_order (order_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

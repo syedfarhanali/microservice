@@ -60,6 +60,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         shipment.setDeliveryAddress(address);
         shipment.setDeliveryStatus(DeliveryStatus.COMPLETED);
         shipment.setItemShipped(product);
+        shipment.setAssociatedOrder(purchaseOrder);
         shipmentRepository.save(shipment);
         return preparePurchaseOrderResponse(purchaseOrderRequest, purchaseOrder);
     }

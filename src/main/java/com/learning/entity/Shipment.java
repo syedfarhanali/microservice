@@ -34,5 +34,11 @@ public class Shipment {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    @Getter
+    @Setter
+    private PurchaseOrder associatedOrder;
+
 
 }
