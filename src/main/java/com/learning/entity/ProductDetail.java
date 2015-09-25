@@ -24,6 +24,10 @@ public class ProductDetail extends BaseEntity{
     private Date manufacturingDate;
 
     @OneToOne
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
+
+    @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
 }

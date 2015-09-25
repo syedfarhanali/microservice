@@ -21,9 +21,9 @@ public class OrderServiceTest extends BaseTest {
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setCustomerId(1L);
         orderRequest.setOrderDate(DateTime.now().toDate());
-        orderRequest.setProductId(2L);
-        orderRequest.setProductQuantity(3);
-        orderRequest.setBillingAddressId(2L);
+        orderRequest.setProductId(3L);
+        orderRequest.setProductQuantity(9);
+        orderRequest.setBillingAddressId(1L);
         OrderResponse orderResponse = purchaseOrderService.placeOrder(orderRequest);
         Assert.assertTrue(orderResponse.getOrderId() > 0);
     }

@@ -1,32 +1,8 @@
-CREATE TABLE product (
+CREATE TABLE customer (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  category varchar(255) DEFAULT NULL,
+  email varchar(255) DEFAULT NULL,
   name varchar(255) DEFAULT NULL,
-  price double NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-CREATE TABLE product_detail (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  color varchar(255) DEFAULT NULL,
-  manufacturing_date datetime DEFAULT NULL,
-  model_number varchar(255) DEFAULT NULL,
-  product_id bigint(20) DEFAULT NULL,
-  PRIMARY KEY (id),
-  KEY FK_n0poneags4pq2e3u2mlv7h29n (product_id),
-  CONSTRAINT FK_n0poneags4pq2e3u2mlv7h29n FOREIGN KEY (product_id) REFERENCES product (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE inventory (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  quantity int(11) DEFAULT NULL,
-  product_id bigint(20) DEFAULT NULL,
-  PRIMARY KEY (id),
-  KEY FK_ce3rbi3bfstbvvyne34c1dvyv (product_id),
-  CONSTRAINT FK_ce3rbi3bfstbvvyne34c1dvyv FOREIGN KEY (product_id) REFERENCES product (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE payment (
@@ -34,6 +10,14 @@ CREATE TABLE payment (
   payment_service_id bigint(20) DEFAULT NULL,
   payment_status varchar(255) DEFAULT NULL,
   transaction_id bigint(20) DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE product (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  category varchar(255) DEFAULT NULL,
+  name varchar(255) DEFAULT NULL,
+  price double NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -51,11 +35,28 @@ CREATE TABLE vendor (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE customer (
+CREATE TABLE product_detail (
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  email varchar(255) DEFAULT NULL,
-  name varchar(255) DEFAULT NULL,
-  PRIMARY KEY (id)
+  color varchar(255) DEFAULT NULL,
+  manufacturing_date datetime DEFAULT NULL,
+  model_number varchar(255) DEFAULT NULL,
+  product_id bigint(20) DEFAULT NULL,
+  vendor_id bigint(20) DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY FK_n0poneags4pq2e3u2mlv7h29n (product_id),
+  KEY FK_5mmc8qja4b2frum4f7pcgwkj9 (vendor_id),
+  CONSTRAINT FK_5mmc8qja4b2frum4f7pcgwkj9 FOREIGN KEY (vendor_id) REFERENCES vendor (id),
+  CONSTRAINT FK_n0poneags4pq2e3u2mlv7h29n FOREIGN KEY (product_id) REFERENCES product (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE inventory (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  quantity int(11) DEFAULT NULL,
+  product_id bigint(20) DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY FK_ce3rbi3bfstbvvyne34c1dvyv (product_id),
+  CONSTRAINT FK_ce3rbi3bfstbvvyne34c1dvyv FOREIGN KEY (product_id) REFERENCES product (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE address (

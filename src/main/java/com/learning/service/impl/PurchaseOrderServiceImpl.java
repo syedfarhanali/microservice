@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * Created by amits on 24/09/15.
@@ -46,6 +45,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
+    @Autowired
+    private VendorRepository vendorRepository;
+
     @Override
     @Transactional
     public OrderResponse placeOrder(OrderRequest orderRequest) throws ItemNotFoundException, InsufficientItemStockException {
@@ -58,33 +60,36 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         Customer customer = customerRepository.findOne(customerId);
 
         Address address = addressRepository.findOne(orderRequest.getBillingAddressId());
+        Payment payment = new Payment();
+        payment.setPaymentServiceId(1L);
+        payment.setPaymentStatus(PaymentStatus.COMPLETED);
+        payment.setTransactionId(new Random().nextLong());
+        paymentRepository.save(payment);
+
 
         Order order = new Order();
         order.setDescription("First purchase order.");
         order.setProduct(product);
+        order.setQuantity(orderRequest.getProductQuantity());
         order.setCustomer(customer);
         order.setBillingAddress(address);
         order.setOrderDate(orderRequest.getOrderDate());
         order.setStatus(OrderStatus.COMPLETED);
+        order.setPayment(payment);
+        order.setVendor(product.getProductDetail().getVendor());
         order = orderRepository.save(order);
 
         Invoice invoice = new Invoice();
         invoice.setPaymentStatus(PaymentStatus.COMPLETED);
         invoice.setCustomer(customer);
         invoice.setOrder(order);
-        invoice.setTotalPrice(product.getPrice()*orderRequest.getProductQuantity());
+        invoice.setTotalPrice(product.getPrice() * orderRequest.getProductQuantity());
         invoiceRepository.save(invoice);
 
         Inventory inventory = inventoryRepository.findByProductId(productId);
         inventory.reduceItemStock(orderRequest.getProductQuantity());
         Logistic logistic = logisticRepository.findOne(1L);
 
-        Payment payment = new Payment();
-        payment.setPaymentServiceId(1L);
-        payment.setPaymentStatus(PaymentStatus.COMPLETED);
-        payment.setTransactionId(new Random().nextLong());
-
-        paymentRepository.save(payment);
 
         Shipment shipment = new Shipment();
         shipment.setShipmentAddress(address);
