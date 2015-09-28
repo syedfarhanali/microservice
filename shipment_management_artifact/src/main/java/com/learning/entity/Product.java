@@ -4,26 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.OneToOne;
 
 /**
- * Created by amits on 21/09/15.
+ * Created by amits on 27/09/15.
  */
 @Entity
-@Setter
 @Getter
-public class Product extends BaseEntity{
+@Setter
+public class Product extends BaseEntity {
 
     private String name;
 
-    private double price;
-
-    @Enumerated(EnumType.STRING)
-    private ProductCategory category;
-
-    @OneToOne(mappedBy = "product")
-    private ProductDetail productDetail;
-
+    private String description;
 }

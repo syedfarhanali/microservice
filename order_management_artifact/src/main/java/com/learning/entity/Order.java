@@ -13,38 +13,25 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name = "purchase_order")
-public class Order extends BaseEntity{
+public class Order extends BaseEntity {
+
+    private String description;
+
+    private Date orderDate;
 
     @JoinColumn(name = "customer_id")
     @ManyToOne
-    private Customer customer;
+    private OrderCustomer orderCustomer;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    private Date orderDate;
-
     @JoinColumn(name = "address_id")
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Address billingAddress;
 
     @JoinColumn(name = "product_id")
-    @OneToOne
-    private Product product;
-
-    @ManyToOne
-    @JoinColumn(name = "vendor_id")
-    private Vendor vendor;
-
-    @OneToOne(mappedBy = "order")
-    private Shipment shipment;
-
-    private int quantity;
-
-    private String description;
-
-    @OneToOne
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
+    @OneToOne(cascade = CascadeType.ALL)
+    private OrderProduct orderProduct;
 
 }

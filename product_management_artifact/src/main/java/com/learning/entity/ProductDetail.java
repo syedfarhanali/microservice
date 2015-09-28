@@ -1,5 +1,6 @@
 package com.learning.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,9 +26,11 @@ public class ProductDetail extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "vendor_id")
+    @JsonIgnore
     private Vendor vendor;
 
     @OneToOne
     @JoinColumn(name = "product_id")
+    @JsonIgnore
     private Product product;
 }

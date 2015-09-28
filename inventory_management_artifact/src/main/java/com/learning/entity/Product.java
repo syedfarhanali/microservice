@@ -3,10 +3,7 @@ package com.learning.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 /**
  * Created by amits on 21/09/15.
@@ -14,16 +11,20 @@ import javax.persistence.OneToOne;
 @Entity
 @Setter
 @Getter
-public class Product extends BaseEntity{
+public class Product extends BaseEntity {
 
     private String name;
 
-    private double price;
+    private String description;
 
-    @Enumerated(EnumType.STRING)
-    private ProductCategory category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    @OneToOne(mappedBy = "product")
+    @OneToOne(mappedBy = "product",cascade = CascadeType.ALL)
     private ProductDetail productDetail;
+
+    @OneToOne(mappedBy = "product",cascade = CascadeType.ALL)
+    private ProductPricing productPricing;
 
 }

@@ -14,18 +14,12 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Customer extends BaseEntity{
+public class Customer extends BaseEntity {
 
     private String name;
 
     private String email;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orderCustomer", cascade = CascadeType.ALL)
     private List<Address> addresses;
-
-    @OneToMany(mappedBy = "customer")
-    private List<Invoice> invoices;
-
-    @OneToMany(mappedBy = "customer")
-    private List<Order> orders;
 }

@@ -16,16 +16,13 @@ import java.util.List;
 @Setter
 public class Customer extends BaseEntity{
 
-    private String name;
+    private String firstName;
+
+    private String lastName;
 
     private String email;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Address> addresses;
 
-    @OneToMany(mappedBy = "customer")
-    private List<Invoice> invoices;
-
-    @OneToMany(mappedBy = "customer")
-    private List<Order> orders;
 }

@@ -1,12 +1,13 @@
 package com.learning.repository;
 
 import com.learning.entity.Vendor;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 /**
  * Created by amits on 26/09/15.
  */
-@RepositoryRestResource(path = "vendors", collectionResourceRel = "vendors")
-public interface VendorRepository extends PagingAndSortingRepository<Vendor,Long> {
+public interface VendorRepository extends JpaRepository<Vendor, Long> {
+    List<Vendor> findByName(String vendorName);
 }

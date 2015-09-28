@@ -17,16 +17,12 @@ public class Shipment extends BaseEntity{
     @JoinColumn(name = "address_id")
     private Address shipmentAddress;
 
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
 
     @OneToOne
     @JoinColumn(name = "order_id")
-    private Order order;
+    private ShipmentOrder shipmentOrder;
 
     @ManyToOne
     @JoinColumn(name = "logistic_id")
