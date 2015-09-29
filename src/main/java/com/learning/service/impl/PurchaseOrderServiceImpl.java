@@ -7,9 +7,7 @@ import com.learning.exception.InsufficientItemStockException;
 import com.learning.exception.ItemNotFoundException;
 import com.learning.repository.*;
 import com.learning.service.*;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.Ordered;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,56 +57,54 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public OrderResponse placeOrder(OrderRequest orderRequest) throws ItemNotFoundException, InsufficientItemStockException {
 
         Product product = getOrderFromRequest(orderRequest);
-        if(validateOrderRequest(orderRequest,product)){
+        if (validateOrderRequest(orderRequest, product)) {
             Customer customer = getCustomerFromOrderRequest(orderRequest);
-            Address address = getAddressFromOrderRequest(orderRequest) ;
-            Double price = getPrice(product,orderRequest);
+            Address address = getAddressFromOrderRequest(orderRequest);
+            Double price = getPrice(product, orderRequest);
 
             Payment payment = createPayment(price);
             Order order = createOrder(product,
-                    orderRequest,customer,address,payment);
-            createInvoice(customer,order,price);
+                    orderRequest, customer, address, payment);
+            createInvoice(customer, order, price);
             reduceItemStock(product.getId(), orderRequest.getProductQuantity());
             createShipment(address, product, order);
 
             return preparePurchaseOrderResponse(orderRequest, order);
-        }
-        else {
+        } else {
             return prepareFailedOrderResponse();
         }
     }
 
 
-    private Product getOrderFromRequest(OrderRequest orderRequest){
+    private Product getOrderFromRequest(OrderRequest orderRequest) {
         Long productId = orderRequest.getProductId();
         return productRepository.findOne(productId);
     }
 
-    private boolean validateOrderRequest(OrderRequest orderRequest,Product product) throws ItemNotFoundException, InsufficientItemStockException{
+    private boolean validateOrderRequest(OrderRequest orderRequest, Product product) throws ItemNotFoundException, InsufficientItemStockException {
         if (product == null) {
             throw new ItemNotFoundException("No item found for id :" + product.getId());
-        }
-        else if(orderRequest.getProductQuantity() > 0){
+        } else if (orderRequest.getProductQuantity() > 0) {
 
         }
         return true;
     }
 
-    private Customer getCustomerFromOrderRequest(OrderRequest orderRequest){
+    private Customer getCustomerFromOrderRequest(OrderRequest orderRequest) {
         Long customerId = orderRequest.getCustomerId();
         Customer customer = customerRepository.findOne(customerId);
         return customer;
     }
 
-    private Address getAddressFromOrderRequest(OrderRequest orderRequest){
-        return  addressRepository.findOne(orderRequest.getBillingAddressId());
+    private Address getAddressFromOrderRequest(OrderRequest orderRequest) {
+        return addressRepository.findOne(orderRequest.getBillingAddressId());
     }
 
-    private Double getPrice(Product product,OrderRequest orderRequest){
-        return  product.getPrice() * orderRequest.getProductQuantity();
+    private Double getPrice(Product product, OrderRequest orderRequest) {
+        return product.getPrice() * orderRequest.getProductQuantity();
     }
 
-    private Payment createPayment(Double amount){
+    private Payment createPayment(Double amount) {
         Payment payment = new Payment();
         payment.setPaymentServiceId(1L);
         payment.setPaymentStatus(PaymentStatus.COMPLETED);
@@ -117,10 +113,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     private Order createOrder(Product product,
-                             OrderRequest orderRequest,
-                             Customer customer,
-                             Address address,
-                             Payment payment){
+                              OrderRequest orderRequest,
+                              Customer customer,
+                              Address address,
+                              Payment payment) {
         Order order = new Order();
         order.setDescription("First purchase order.");
         order.setProduct(product);
@@ -136,8 +132,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     private void createInvoice(Customer customer,
-                                 Order order,
-                                 Double totalPrice){
+                               Order order,
+                               Double totalPrice) {
         Invoice invoice = new Invoice();
         invoice.setPaymentStatus(PaymentStatus.COMPLETED);
         invoice.setCustomer(customer);
@@ -146,14 +142,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         invoiceService.createInvoice(invoice);
     }
 
-    private void reduceItemStock(long productId,Integer productQuantity) throws InsufficientItemStockException {
+    private void reduceItemStock(long productId, Integer productQuantity) throws InsufficientItemStockException {
         Inventory inventory = inventoryRepository.findByProductId(productId);
         inventory.reduceItemStock(productQuantity);
     }
 
     private void createShipment(Address address,
                                 Product product,
-                                Order order){
+                                Order order) {
         Logistic logistic = logisticRepository.findOne(1L);
         Shipment shipment = new Shipment();
         shipment.setShipmentAddress(address);
@@ -179,7 +175,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return orderResponse;
     }
 
-    private OrderResponse prepareFailedOrderResponse(){
+    private OrderResponse prepareFailedOrderResponse() {
         OrderResponse orderResponse = new OrderResponse();
         orderResponse.setStatus(OrderStatus.FAILED);
         orderResponse.setMessage(ORDER_FAILED_MSG);
