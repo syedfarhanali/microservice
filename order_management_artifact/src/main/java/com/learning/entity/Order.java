@@ -34,4 +34,5 @@ public class Order extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL)
     private OrderProduct orderProduct;
 
+
 }

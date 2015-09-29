@@ -17,6 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <camel.version>2.15.3</camel.version>
         <java.version>1.8</java.version>
+        <start-class>com.learning.ShipmentManagementModuleStarter</start-class>
     </properties>
 
     <dependencies>
@@ -106,4 +107,12 @@
         <!--<version>${org.mapstruct.version}</version>-->
         <!--</dependency>-->
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

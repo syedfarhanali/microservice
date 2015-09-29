@@ -3,7 +3,7 @@ package com.leaning.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.OrderManagementServiceStarter;
 import com.learning.controller.OrderController;
-import com.learning.rest.resource.OrderResource;
+import com.learning.rest.resource.CreateOrderRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +24,16 @@ public class OrderControllerTest {
 
     @Test
     public void testOrderCreation() throws Exception {
-        OrderResource orderResource = new OrderResource();
-        orderResource.setBillingAddressId(1L);
-        orderResource.setCustomerId(1L);
-        orderResource.setProductId(1L);
-        orderResource.setQuantity(4);
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest();
+        createOrderRequest.setBillingAddressId(1L);
+        createOrderRequest.setCustomerId(1L);
+        createOrderRequest.setProductId(1L);
+        createOrderRequest.setQuantity(4);
         ObjectMapper
                 objectMapper = new ObjectMapper();
-        String resource = objectMapper.writeValueAsString(orderResource);
+        String resource = objectMapper.writeValueAsString(createOrderRequest);
         System.out.println(resource);
 
-        orderController.create(orderResource);
+        orderController.create(createOrderRequest);
     }
 }

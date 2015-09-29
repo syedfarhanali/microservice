@@ -13,14 +13,14 @@ import javax.persistence.*;
 @Setter
 public class Shipment extends BaseEntity{
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
-    private Address shipmentAddress;
+    private ShipmentAddress shipmentAddress;
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private ShipmentOrder shipmentOrder;
 

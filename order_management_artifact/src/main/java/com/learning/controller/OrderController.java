@@ -2,7 +2,7 @@ package com.learning.controller;
 
 import com.learning.entity.Order;
 import com.learning.repository.OrderRepository;
-import com.learning.rest.resource.OrderResource;
+import com.learning.rest.resource.CreateOrderRequest;
 import com.learning.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +33,8 @@ public class OrderController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Order create(@RequestBody OrderResource orderResource) {
-        return orderService.createOrder(orderResource);
+    public Order create(@RequestBody CreateOrderRequest createOrderRequest) {
+        return orderService.createOrder(createOrderRequest);
 
     }
 

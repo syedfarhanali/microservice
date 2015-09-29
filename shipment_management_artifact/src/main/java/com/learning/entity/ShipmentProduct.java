@@ -11,7 +11,9 @@ import javax.persistence.Entity;
 @Entity
 @Getter
 @Setter
-public class Product extends BaseEntity {
+public class ShipmentProduct extends BaseEntity {
+
+    private Long productId;
 
     private String name;
 

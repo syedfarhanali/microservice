@@ -1,5 +1,6 @@
 package com.learning.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,5 +21,6 @@ public class Logistic extends BaseEntity {
     private String email;
 
     @OneToMany(mappedBy = "logistic")
+    @JsonIgnore
     private List<Shipment> shipments;
 }

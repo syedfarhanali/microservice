@@ -1,10 +1,10 @@
 package com.learning.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
 
 /**
  * Created by amits on 21/09/15.
@@ -19,11 +19,12 @@ public class ShipmentOrder extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "product_id")
-    private Product product;
+    private ShipmentProduct product;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @JsonIgnore
+    private ShipmentCustomer customer;
 
     private String vendor;
 

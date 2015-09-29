@@ -34,7 +34,6 @@ public class InventoryEventHandler implements EventHandler {
             } catch (InsufficientItemStockException e) {
                 e.printStackTrace();
             }
-            handleOrderCreation(event.getEventId());
         } else if (EventType.ORDER_FAILED.equals(eventType)) {
             handleOrderFailure(event.getEventId());
         } else if (EventType.ORDER_SUCCESS.equals(eventType)) {
@@ -44,8 +43,6 @@ public class InventoryEventHandler implements EventHandler {
 
     private void handleOrderFailure(Long orderId) {
         OrderResource orderResource = fetchOrderDetails(orderId);
-
-
 
     }
 
@@ -59,9 +56,4 @@ public class InventoryEventHandler implements EventHandler {
         OrderResource orderResource = fetchOrderDetails(orderId);
     }
 
-    private void handleOrderCreation(Long orderId) {
-        OrderResource orderResource = fetchOrderDetails(orderId);
-        System.out.println("Order placed with id :"+orderResource.getId());
-        System.out.println("Order placed by :"+orderResource.getOrderCustomer().getEmail());
-    }
 }

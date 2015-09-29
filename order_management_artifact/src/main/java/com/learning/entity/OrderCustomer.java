@@ -19,6 +19,8 @@ public class OrderCustomer extends BaseEntity{
 
     private Long customerId;
 
+    private String name;
+
     private String email;
 
     @JsonIgnore

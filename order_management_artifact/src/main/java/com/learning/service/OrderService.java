@@ -1,7 +1,9 @@
 package com.learning.service;
 
 import com.learning.entity.Order;
-import com.learning.rest.resource.OrderResource;
+import com.learning.entity.OrderStatus;
+import com.learning.rest.resource.CreateOrderRequest;
+import com.learning.rest.resource.shipment.ShipmentBean;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface OrderService {
     @Transactional
-    Order createOrder(OrderResource orderResource);
+    Order createOrder(CreateOrderRequest createOrderRequest);
 
+    void updateOrder(ShipmentBean shipmentBean, OrderStatus completed);
 }

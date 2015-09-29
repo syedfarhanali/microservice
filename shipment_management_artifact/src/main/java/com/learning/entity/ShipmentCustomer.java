@@ -1,5 +1,6 @@
 package com.learning.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,12 +15,12 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Customer extends BaseEntity {
+public class ShipmentCustomer extends BaseEntity {
+
+    private Long customerId;
 
     private String name;
 
     private String email;
 
-    @OneToMany(mappedBy = "orderCustomer", cascade = CascadeType.ALL)
-    private List<Address> addresses;
 }

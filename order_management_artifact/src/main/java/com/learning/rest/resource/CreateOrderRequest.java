@@ -8,7 +8,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OrderResource {
+public class CreateOrderRequest {
 
     private Long productId;
 

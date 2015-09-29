@@ -14,8 +14,5 @@ public class ProductPricingResource {
 
     private double price;
 
-    @JsonIgnore
-    private ProductResource product;
-
     private double discount;
 }

@@ -26,7 +26,6 @@ public class ProductDetail extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "vendor_id")
-    @JsonIgnore
     private Vendor vendor;
 
     @OneToOne
