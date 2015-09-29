@@ -6,8 +6,10 @@ import com.learning.entity.*;
 import com.learning.exception.InsufficientItemStockException;
 import com.learning.exception.ItemNotFoundException;
 import com.learning.repository.*;
-import com.learning.service.PurchaseOrderService;
+import com.learning.service.*;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,42 +33,94 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private AddressRepository addressRepository;
 
     @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private ShipmentRepository shipmentRepository;
-
-    @Autowired
     private LogisticRepository logisticRepository;
 
     @Autowired
-    private PaymentRepository paymentRepository;
+    private OrderService orderService;
 
     @Autowired
-    private InvoiceRepository invoiceRepository;
+    private ShipmentService shipmentService;
 
     @Autowired
-    private VendorRepository vendorRepository;
+    private PaymentService paymentService;
+
+    @Autowired
+    private InvoiceService invoiceService;
+
+//    @Autowired
+//    private VendorRepository vendorRepository;
+
+    private static final String ORDER_SUCCESS_MSG = "Order placed";
+    private static final String ORDER_FAILED_MSG = "Unable to validate order";
+
 
     @Override
     @Transactional
     public OrderResponse placeOrder(OrderRequest orderRequest) throws ItemNotFoundException, InsufficientItemStockException {
-        Long productId = orderRequest.getProductId();
-        Product product = productRepository.findOne(productId);
-        if (product == null) {
-            throw new ItemNotFoundException("No item found for id :" + productId);
+
+        Product product = getOrderFromRequest(orderRequest);
+        if(validateOrderRequest(orderRequest,product)){
+            Customer customer = getCustomerFromOrderRequest(orderRequest);
+            Address address = getAddressFromOrderRequest(orderRequest) ;
+            Double price = getPrice(product,orderRequest);
+
+            Payment payment = createPayment(price);
+            Order order = createOrder(product,
+                    orderRequest,customer,address,payment);
+            createInvoice(customer,order,price);
+            reduceItemStock(product.getId(), orderRequest.getProductQuantity());
+            createShipment(address, product, order);
+
+            return preparePurchaseOrderResponse(orderRequest, order);
         }
+        else {
+            return prepareFailedOrderResponse();
+        }
+    }
+
+
+    private Product getOrderFromRequest(OrderRequest orderRequest){
+        Long productId = orderRequest.getProductId();
+        return productRepository.findOne(productId);
+    }
+
+    private boolean validateOrderRequest(OrderRequest orderRequest,Product product) throws ItemNotFoundException, InsufficientItemStockException{
+        if (product == null) {
+            throw new ItemNotFoundException("No item found for id :" + product.getId());
+        }
+        else if(orderRequest.getProductQuantity() > inventoryRepository.findByProductId(product.getId()).getQuantity()){
+            throw new InsufficientItemStockException("Insufficient product, for id: " + product.getId());
+        }
+        return true;
+    }
+
+    private Customer getCustomerFromOrderRequest(OrderRequest orderRequest){
         Long customerId = orderRequest.getCustomerId();
         Customer customer = customerRepository.findOne(customerId);
+        return customer;
+    }
 
-        Address address = addressRepository.findOne(orderRequest.getBillingAddressId());
+    private Address getAddressFromOrderRequest(OrderRequest orderRequest){
+        return  addressRepository.findOne(orderRequest.getBillingAddressId());
+    }
+
+    private Double getPrice(Product product,OrderRequest orderRequest){
+        return  product.getPrice() * orderRequest.getProductQuantity();
+    }
+
+    private Payment createPayment(Double amount){
         Payment payment = new Payment();
         payment.setPaymentServiceId(1L);
         payment.setPaymentStatus(PaymentStatus.COMPLETED);
         payment.setTransactionId(new Random().nextLong());
-        paymentRepository.save(payment);
+        return paymentService.createPayment(payment);
+    }
 
-
+    private Order createOrder(Product product,
+                             OrderRequest orderRequest,
+                             Customer customer,
+                             Address address,
+                             Payment payment){
         Order order = new Order();
         order.setDescription("First purchase order.");
         order.setProduct(product);
@@ -77,30 +131,37 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         order.setStatus(OrderStatus.COMPLETED);
         order.setPayment(payment);
         order.setVendor(product.getProductDetail().getVendor());
-        order = orderRepository.save(order);
+        order = orderService.createOrder(order);
+        return order;
+    }
 
+    private void createInvoice(Customer customer,
+                                 Order order,
+                                 Double totalPrice){
         Invoice invoice = new Invoice();
         invoice.setPaymentStatus(PaymentStatus.COMPLETED);
         invoice.setCustomer(customer);
         invoice.setOrder(order);
-        invoice.setTotalPrice(product.getPrice() * orderRequest.getProductQuantity());
-        invoiceRepository.save(invoice);
+        invoice.setTotalPrice(totalPrice);
+        invoiceService.createInvoice(invoice);
+    }
 
+    private void reduceItemStock(long productId,Integer productQuantity) throws InsufficientItemStockException {
         Inventory inventory = inventoryRepository.findByProductId(productId);
-        inventory.reduceItemStock(orderRequest.getProductQuantity());
+        inventory.reduceItemStock(productQuantity);
+    }
+
+    private void createShipment(Address address,
+                                Product product,
+                                Order order){
         Logistic logistic = logisticRepository.findOne(1L);
-
-
         Shipment shipment = new Shipment();
         shipment.setShipmentAddress(address);
         shipment.setStatus(DeliveryStatus.COMPLETED);
         shipment.setProduct(product);
         shipment.setOrder(order);
         shipment.setLogistic(logistic);
-        shipmentRepository.save(shipment);
-
-
-        return preparePurchaseOrderResponse(orderRequest, order);
+        shipmentService.createShipment(shipment);
     }
 
     private OrderResponse preparePurchaseOrderResponse(OrderRequest orderRequest, Order order) {
@@ -113,6 +174,15 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         orderResponse.setOrderDate(order.getOrderDate());
         orderResponse.setCustomerName(order.getCustomer().getName());
         orderResponse.setOrderId(order.getId());
+        orderResponse.setStatus(OrderStatus.PLACED);
+        orderResponse.setMessage(ORDER_SUCCESS_MSG);
+        return orderResponse;
+    }
+
+    private OrderResponse prepareFailedOrderResponse(){
+        OrderResponse orderResponse = new OrderResponse();
+        orderResponse.setStatus(OrderStatus.FAILED);
+        orderResponse.setMessage(ORDER_FAILED_MSG);
         return orderResponse;
     }
 
