@@ -88,7 +88,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         if (product == null) {
             throw new ItemNotFoundException("No item found for id :" + product.getId());
         }
-        else if(orderRequest.getProductQuantity() > inventoryRepository.findByProductId(product.getId()).getQuantity()){
+        else if(orderRequest.getProductQuantity() > inventoryRepository.findByProductId(product.getId()).getQuantity()) {
             throw new InsufficientItemStockException("Insufficient product, for id: " + product.getId());
         }
         return true;
@@ -107,6 +107,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private Double getPrice(Product product,OrderRequest orderRequest){
         return  product.getPrice() * orderRequest.getProductQuantity();
     }
+
 
     private Payment createPayment(Double amount){
         Payment payment = new Payment();
