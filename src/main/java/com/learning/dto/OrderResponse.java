@@ -28,4 +28,8 @@ public class OrderResponse {
     private Long billingAddressId;
 
     private Integer productQuantity;
+
+    private String message;
+
+    private OrderStatus status;
 }
