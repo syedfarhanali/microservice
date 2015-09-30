@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.entity.*;
 import com.learning.event.Event;
 import com.learning.event.EventType;
+import com.learning.exception.ExternalSystemUnreachableException;
+import com.learning.integration.AddressServiceIntegration;
+import com.learning.integration.CustomerServiceIntegration;
+import com.learning.integration.ProductServiceIntegration;
 import com.learning.repository.OrderCustomerRepository;
 import com.learning.repository.OrderRepository;
 import com.learning.rest.resource.CreateOrderRequest;
@@ -17,7 +21,6 @@ import com.learning.rest.resource.shipment.ShipmentOrderBean;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -43,38 +46,55 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ProducerTemplate producerTemplate;
 
+    @Autowired
+    private CustomerServiceIntegration customerServiceIntegration;
+
+    @Autowired
+    private ProductServiceIntegration productServiceIntegration;
+
+    @Autowired
+    private AddressServiceIntegration addressServiceIntegration;
+
     @Transactional
     @Override
-    public Order createOrder(CreateOrderRequest createOrderRequest) {
+    public Order placeOrder(CreateOrderRequest createOrderRequest) {
+        Order order = createOrder(createOrderRequest);
+        order = orderRepository.save(order);
+        notifyListeners(order, EventType.ORDER_PLACED);
+        StringBuilder stringBuilder = new StringBuilder("Order created for user ").append(order.getOrderCustomer().getName()).append(" for product ").append(order.getOrderProduct().getName()).append(" and for quantity ").append(order.getOrderProduct().getQuantity());
+        stringBuilder.append(" and order id :").append(order.getId());
+        System.out.println(stringBuilder);
+        return order;
+    }
+
+    private Order createOrder(CreateOrderRequest createOrderRequest) {
         CustomerBean customerBean = getCustomerBean(createOrderRequest);
         ProductBean productBean = getProductBean(createOrderRequest);
         AddressBean addressBean = getAddressBean(createOrderRequest);
-
+        if (customerBean == null || productBean == null || addressBean == null) {
+            throw new ExternalSystemUnreachableException("Remote system is unreachable. Try after sometime");
+        }
         Order order = new Order();
         order.setDescription("First order");
         Address billingAddress = convertToEntity(addressBean);
         order.setBillingAddress(billingAddress);
         order.setOrderDate(new Date());
         order.setStatus(OrderStatus.IN_PROCESS);
+
         OrderProduct orderProduct = convertToEntity(productBean);
         orderProduct.setQuantity(createOrderRequest.getQuantity());
         order.setOrderProduct(orderProduct);
-        OrderCustomer orderCustomer = convertToEntity(customerBean);
-        List<Order> oldOrders = orderCustomer.getOrders();
-        if (oldOrders == null) {
-            oldOrders = new ArrayList<>();
-        }
-        oldOrders.add(order);
-        orderCustomer.setOrders(oldOrders);
-        order.setOrderCustomer(orderCustomer);
-        orderCustomerRepository.save(orderCustomer);
 
-        EventType eventType = EventType.ORDER_PLACED;
-        Order savedOrder = orderRepository.save(order);
-        notifyListeners(order, eventType);
-        StringBuilder stringBuilder = new StringBuilder("Order created for user ").append(orderCustomer.getName()).append(" for product ").append(orderProduct.getName()).append(" and for quantity ").append(orderProduct.getQuantity());
-        System.out.println(stringBuilder);
-        return savedOrder;
+        OrderCustomer orderCustomer = convertToEntity(customerBean);
+        List<Order> orders = orderCustomer.getOrders();
+        if (orders == null) {
+            orders = new ArrayList<>();
+        }
+        orders.add(order);
+        orderCustomer.setOrders(orders);
+        orderCustomerRepository.save(orderCustomer);
+        order.setOrderCustomer(orderCustomer);
+        return order;
     }
 
     @Override
@@ -86,25 +106,23 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(orderStatus);
         notifyListeners(order, EventType.ORDER_SUCCESS);
         StringBuilder stringBuilder = new StringBuilder("Order completed for user ").append(order.getOrderCustomer().getName()).append(" for product ").append(order.getOrderProduct().getName());
+        stringBuilder.append(" and order id :").append(orderId);
         System.out.println(stringBuilder);
     }
 
     private AddressBean getAddressBean(CreateOrderRequest createOrderRequest) {
         Long billingAddressId = createOrderRequest.getBillingAddressId();
-        ResponseEntity<AddressBean> responseEntity = restTemplate.getForEntity("http://localhost:9090/address/{id}", AddressBean.class, billingAddressId);
-        return responseEntity.getBody();
+        return addressServiceIntegration.getAddressDetails(billingAddressId);
     }
 
     private ProductBean getProductBean(CreateOrderRequest createOrderRequest) {
         Long productId = createOrderRequest.getProductId();
-        ResponseEntity<ProductBean> productResponseEntity = restTemplate.getForEntity("http://localhost:9091/product/{id}", ProductBean.class, productId);
-        return productResponseEntity.getBody();
+        return productServiceIntegration.getProductDetails(productId);
     }
 
     private CustomerBean getCustomerBean(CreateOrderRequest createOrderRequest) {
         Long customerId = createOrderRequest.getCustomerId();
-        ResponseEntity<CustomerBean> responseEntity = restTemplate.getForEntity("http://localhost:9090/customer/{id}", CustomerBean.class, customerId);
-        return responseEntity.getBody();
+        return customerServiceIntegration.getCustomerDetails(customerId);
     }
 
     private void notifyListeners(Order order, EventType eventType) {

@@ -51,7 +51,24 @@ public class InventoryServiceImpl implements InventoryService {
 
         InventoryItem inventoryItem = inventoryItemRepository.findByProductId(orderResource.getOrderProduct().getProductId());
         inventoryItem.reduceItemStock(orderResource.getOrderProduct().getQuantity());
+        StringBuilder stringBuilder = new StringBuilder("Updated inventory for ");
+        stringBuilder.append(" item : ").append(product.getName());
+        stringBuilder.append(" For quantity ").append(orderResource.getOrderProduct().getQuantity());
+        stringBuilder.append(" and order id :").append(orderResource.getId());
+        System.out.println(stringBuilder);
         return inventoryOrder;
+    }
+
+    @Override
+    @Transactional
+    public void updateInventoryOrder(OrderResource orderResource, OrderStatus orderStatus) {
+        InventoryOrder inventoryOrder = inventoryOrderRepository.findByOrderId(orderResource.getId());
+        inventoryOrder.setStatus(orderStatus);
+        StringBuilder stringBuilder = new StringBuilder("Updated inventory order status for ");
+        stringBuilder.append(" item : ").append(orderResource.getOrderProduct().getName());
+        stringBuilder.append(" For quantity ").append(orderResource.getOrderProduct().getQuantity());
+        stringBuilder.append(" and order id :").append(orderResource.getId());
+        System.out.println(stringBuilder);
     }
 
     private void notifyListeners(InventoryOrder inventoryOrder, EventType eventType) {

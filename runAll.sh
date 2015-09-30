@@ -1,8 +1,36 @@
 #!/bin/sh
 
-java -jar ./customer_management_artifact/target/customer-management-1.2.6.RELEASE.jar > customer_management.log &
-java -jar ./inventory_management_artifact/target/inventory-management-1.2.6.RELEASE.jar > inventory_management.log &
-#java -jar ./messaging_event_artifact/target/messaging-infrastructure-1.0.0.jar
-java -jar ./order_management_artifact/target/order-management-1.2.6.RELEASE.jar > order_management.log &
-#java -jar ./payment_management_artifact/target/payment-management-1.0-SNAPSHOT.jar > payment_management.log &
-java -jar ./shipment_management_artifact/target/shipment-management-1.2.6.RELEASE.jar > shipment_management.log &
+rm -rf services.pid
+
+echo "Do you want to start customer management service :" 
+read custom_service_input
+if [ $custom_service_input == "y" ]; then
+	echo "Starting customer management service"
+	java -jar ./customer_management_artifact/target/customer-management-1.2.6.RELEASE.jar -Dcom.sun.management.jmxremote.port=1101 -Dcom.sun.management.jmxremote.authenticate=false > customer_management.log &
+	echo $! >> services.pid
+fi
+
+echo  "Do you want to start inventory management service :" 
+read inventory_service_input
+if [ $inventory_service_input == "y" ]; then
+	echo "Starting inventory management service"
+	java -jar ./inventory_management_artifact/target/inventory-management-1.2.6.RELEASE.jar -Dcom.sun.management.jmxremote.port=1102 -Dcom.sun.management.jmxremote.authenticate=false > inventory_management.log &
+	echo $! >> services.pid
+fi
+
+echo  "Do you want to start order management service:" 
+read order_service_input
+if [ $order_service_input == "y" ]; then
+	echo "Starting order management service"
+	java -jar ./order_management_artifact/target/order-management-1.2.6.RELEASE.jar -Dcom.sun.management.jmxremote.port=1103 -Dcom.sun.management.jmxremote.authenticate=false > order_management.log &
+	echo $! >> services.pid
+	
+fi
+
+echo  "Do you want to start shipment management service:"
+read shipment_service_input
+if [ $shipment_service_input == "y" ]; then
+	echo "Starting shipment management service"
+	java -jar ./shipment_management_artifact/target/shipment-management-1.2.6.RELEASE.jar -Dcom.sun.management.jmxremote.port=1103 -Dcom.sun.management.jmxremote.authenticate=false > shipment_management.log &
+	echo $! >> services.pid
+fi

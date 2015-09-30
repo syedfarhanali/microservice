@@ -1,5 +1,6 @@
 package com.learning.listener;
 
+import com.learning.entity.OrderStatus;
 import com.learning.event.Event;
 import com.learning.event.EventType;
 import com.learning.exception.InsufficientItemStockException;
@@ -35,9 +36,10 @@ public class InventoryEventHandler implements EventHandler {
                 e.printStackTrace();
             }
         } else if (EventType.ORDER_FAILED.equals(eventType)) {
-            handleOrderFailure(event.getEventId());
+//            handleOrderFailure(event.getEventId());
         } else if (EventType.ORDER_SUCCESS.equals(eventType)) {
-            handleOrderSuccess(event.getEventId());
+             OrderResource orderResource = fetchOrderDetails(eventId);
+            inventoryService.updateInventoryOrder(orderResource, OrderStatus.COMPLETED);
         }
     }
 

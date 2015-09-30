@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableJpaRepositories
 @EnableTransactionManagement
-public class OrderManagementServiceStarter {
 
+public class OrderManagementServiceStarter {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(OrderManagementServiceStarter.class, args);

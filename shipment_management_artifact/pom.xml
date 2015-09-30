@@ -101,6 +101,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-javanica</artifactId>
+            <version>1.4.16</version>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-core</artifactId>
+            <version>1.4.16</version>
+        </dependency>
+
         <!--<dependency>-->
         <!--<groupId>org.mapstruct</groupId>-->
         <!--<artifactId>mapstruct-processor</artifactId>-->

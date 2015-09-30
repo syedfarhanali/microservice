@@ -30,7 +30,6 @@ public class OrderEventHandler implements EventHandler {
         EventType eventType = event.getEventType();
         Long eventId = event.getEventId();
         if (EventType.SHIPMENT_DELIVERED.equals(eventType)) {
-            System.out.println(event);
             ShipmentBean shipmentBean = fetchShipmentDetails(eventId);
             orderService.updateOrder(shipmentBean, OrderStatus.COMPLETED);
 

@@ -1,12 +1,15 @@
 package com.learning.controller;
 
 import com.learning.entity.Order;
+import com.learning.exception.ExternalSystemUnreachableException;
 import com.learning.repository.OrderRepository;
 import com.learning.rest.resource.CreateOrderRequest;
 import com.learning.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -33,9 +36,14 @@ public class OrderController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Order create(@RequestBody CreateOrderRequest createOrderRequest) {
-        return orderService.createOrder(createOrderRequest);
+    public Order create(@RequestBody CreateOrderRequest createOrderRequest) throws Exception {
+        return orderService.placeOrder(createOrderRequest);
 
+    }
+
+    @ExceptionHandler(ExternalSystemUnreachableException.class)
+    void handleException(HttpServletResponse response) throws IOException {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
 

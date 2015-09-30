@@ -2,6 +2,7 @@ package com.learning.service;
 
 import com.learning.entity.InventoryItem;
 import com.learning.entity.InventoryOrder;
+import com.learning.entity.OrderStatus;
 import com.learning.exception.InsufficientItemStockException;
 import com.learning.rest.resource.OrderResource;
 
@@ -11,4 +12,6 @@ import com.learning.rest.resource.OrderResource;
 public interface InventoryService {
 
     InventoryOrder createInventoryOrder(OrderResource orderResource) throws InsufficientItemStockException;
+
+    void updateInventoryOrder(OrderResource orderResource, OrderStatus orderStatus);
 }

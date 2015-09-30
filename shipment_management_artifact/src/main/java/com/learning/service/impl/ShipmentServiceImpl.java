@@ -66,6 +66,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         shipment = shipmentRepository.save(shipment);
         notifyListeners(shipment, EventType.SHIPMENT_CREATED);
         StringBuilder stringBuilder = new StringBuilder("Shipment created for user ").append(customer.getName()).append(" for product ").append(product.getName());
+        stringBuilder.append(" and order id :").append(orderResource.getId());
         System.out.println(stringBuilder);
         return shipment;
     }
@@ -121,6 +122,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         shipmentList.forEach(shipment -> {
             shipment.setStatus(DeliveryStatus.COMPLETED);
             StringBuilder stringBuilder = new StringBuilder("Shipment completed for user ").append(shipment.getShipmentOrder().getCustomer().getName()).append(" for product ").append(shipment.getShipmentOrder().getProduct().getName());
+            stringBuilder.append(" and order id :").append(shipment.getShipmentOrder().getOrderId());
             System.out.println(stringBuilder);
             notifyListeners(shipment, EventType.SHIPMENT_DELIVERED);
         });
