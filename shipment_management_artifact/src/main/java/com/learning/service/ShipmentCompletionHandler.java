@@ -25,7 +25,7 @@ public class ShipmentCompletionHandler {
     @Autowired
     private ShipmentService shipmentService;
 
-    @Scheduled(fixedRate = 30000, initialDelay = 60000)
+    @Scheduled(fixedRate = 30000, initialDelay = 90000)
     @Transactional
     public void completeShipment() {
         shipmentService.markCompleted();

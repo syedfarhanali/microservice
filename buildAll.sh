@@ -1,38 +1,21 @@
 #!/bin/sh
 
-cd customer_management_artifact
-rm -rf build.output
-mvn -T 1C clean install -DskipTests=true -DdownloadSources=false > build.output &
-cd ..
+build_module (){
+	cd $1
+	rm -rf build.output
+	echo "Building module $1"
+	mvn -T 1C clean install -DskipTests=true -DdownloadSources=false >> ../build.output 
+	cd ..
+}
 
-cd inventory_management_artifact
 rm -rf build.output
-mvn -T 1C clean install -DskipTests=true -DdownloadSources=false > build.output &
-cd ..
 
-cd messaging_event_artifact
-rm -rf build.output
-mvn -T 1C clean install -DskipTests=true -DdownloadSources=false > build.output &
-cd ..
+build_module "messaging_event_artifact"
+build_module "embedded_activemq_broker" &
+build_module "customer_management_artifact" &
+build_module "inventory_management_artifact" &
+build_module "order_management_artifact" &
+build_module "shipment_management_artifact" &
 
-cd order_management_artifact
-rm -rf build.output
-mvn -T 1C clean install -DskipTests=true -DdownloadSources=false > build.output &
 
-cd payment_management_artifact
-rm -rf build.output
-mvn -T 1C clean install -DskipTests=true -DdownloadSources=false > build.output & 
-cd ..
-
-cd product_management_artifact
-rm -rf build.output
-mvn -T 1C clean install -DskipTests=true -DdownloadSources=false > build.output &
-cd ..
-
-cd shipment_management_artifact
-rm -rf build.output
-mvn -T 1C clean install -DskipTests=true -DdownloadSources=false > build.output &
-cd ..
-
-#tail -f customer_management_artifact/build.output inventory_management_artifact/build.output messaging_event_artifact/build.output order_management_artifact/build.output
 

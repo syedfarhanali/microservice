@@ -13,6 +13,7 @@ import org.apache.camel.support.TypeConverterSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -27,12 +28,18 @@ public class AppConfig {
     @Autowired
     private CamelContext camelContext;
 
+    @Autowired
+    private Environment environment;
+
     @Bean
     RoutesBuilder myRouter() {
+
+        String topic = environment.getProperty("queue.name");
+
         return new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                from("activemq:topic:microservice").beanRef("shipmentEventHandler", "handleEvent");
+                from("activemq:topic:"+topic).beanRef("shipmentEventHandler", "handleEvent");
             }
 
         };
