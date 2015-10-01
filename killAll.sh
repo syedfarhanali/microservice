@@ -6,3 +6,4 @@ echo "Killing process with PID :"$line
 kill -9 $line &
 done
 
+rm -rf services.pid

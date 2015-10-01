@@ -1,6 +1,5 @@
 #!/bin/sh
 
-rm -rf services.pid
 
 echo  "Do you want to start embedded broker:"
 read embedded_broker_input
